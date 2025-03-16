@@ -10,6 +10,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarTrigger,
+  useSidebar
 } from "@/components/ui/sidebar";
 import {
   BarChart3,
@@ -25,7 +26,7 @@ import { cn } from "@/lib/utils";
 
 export function MainSidebar() {
   const location = useLocation();
-  const [open, setOpen] = useState(true);
+  const { open, setOpen } = useSidebar();
 
   const menuItems = [
     {
@@ -61,7 +62,7 @@ export function MainSidebar() {
   ];
 
   return (
-    <Sidebar open={open} onOpenChange={setOpen} className="border-r border-border">
+    <Sidebar className="border-r border-border">
       <SidebarHeader className="flex h-16 items-center justify-between px-4">
         <div className="flex items-center space-x-2">
           <BarChart3 className="h-6 w-6 text-primary" />

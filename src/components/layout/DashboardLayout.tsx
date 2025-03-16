@@ -18,7 +18,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   }, [location.pathname, navigate]);
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={true}>
       <div className="flex min-h-screen w-full">
         <MainSidebar />
         <div className="flex flex-col flex-1 w-full overflow-hidden">
