@@ -23,7 +23,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <MainSidebar />
         <div className="flex flex-col flex-1 w-full overflow-hidden">
           <MainHeader />
-          <main className="flex-1 overflow-auto p-6 transition-all-300 animate-fade-in">
+          <main className="flex-1 overflow-auto p-6 transition-all duration-300 animate-fade-in">
             {children}
           </main>
         </div>
