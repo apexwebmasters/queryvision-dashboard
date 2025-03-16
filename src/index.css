@@ -136,3 +136,20 @@
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--primary) / 0.3) hsl(var(--secondary) / 0.5);
 }
+
+/* Improve text contrast */
+.text-muted-foreground {
+  @apply text-opacity-70 dark:text-opacity-80;
+}
+
+table {
+  @apply text-foreground;
+}
+
+.card, .card-header, .card-content {
+  @apply text-card-foreground;
+}
+
+.badge {
+  @apply text-foreground;
+}

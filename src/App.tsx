@@ -11,6 +11,7 @@ import TopPages from "./pages/TopPages";
 import Performance from "./pages/Performance";
 import UploadReport from "./pages/UploadReport";
 import Settings from "./pages/Settings";
+import DecliningKeywords from "./pages/DecliningKeywords";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -50,6 +51,14 @@ const App = () => (
             element={
               <DashboardLayout>
                 <Performance />
+              </DashboardLayout>
+            } 
+          />
+          <Route 
+            path="/declining-keywords" 
+            element={
+              <DashboardLayout>
+                <DecliningKeywords />
               </DashboardLayout>
             } 
           />

@@ -20,6 +20,7 @@ import {
   Search,
   Settings,
   Upload,
+  TrendingDown
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -49,6 +50,11 @@ export function MainSidebar() {
       icon: LineChart,
     },
     {
+      title: "Declining Keywords",
+      path: "/declining-keywords",
+      icon: TrendingDown,
+    },
+    {
       title: "Upload Report",
       path: "/upload",
       icon: Upload,
@@ -65,13 +71,13 @@ export function MainSidebar() {
       <SidebarHeader className="flex h-16 items-center justify-between px-4">
         <div className="flex items-center space-x-2">
           <BarChart3 className="h-6 w-6 text-primary" />
-          <span className={cn("font-semibold text-lg transition-opacity", !open && "opacity-0")}>
+          <span className={cn("font-semibold text-lg transition-opacity text-foreground", !open && "opacity-0")}>
             SearchVision
           </span>
         </div>
         <SidebarTrigger>
           <button className="p-2 rounded-md hover:bg-sidebar-accent transition-colors">
-            <Menu className="h-5 w-5" />
+            <Menu className="h-5 w-5 text-foreground" />
           </button>
         </SidebarTrigger>
       </SidebarHeader>
@@ -99,7 +105,7 @@ export function MainSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="p-4 text-xs text-center text-muted-foreground">
+      <SidebarFooter className="p-4 text-xs text-center text-sidebar-foreground">
         {open && <p>Search Console Analytics</p>}
       </SidebarFooter>
     </Sidebar>
