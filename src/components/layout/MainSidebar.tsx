@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils";
 
 export function MainSidebar() {
   const location = useLocation();
-  const { open, setOpen } = useSidebar();
+  const { open } = useSidebar();
 
   const menuItems = [
     {
@@ -69,7 +69,7 @@ export function MainSidebar() {
             SearchVision
           </span>
         </div>
-        <SidebarTrigger asChild>
+        <SidebarTrigger>
           <button className="p-2 rounded-md hover:bg-sidebar-accent transition-colors">
             <Menu className="h-5 w-5" />
           </button>
