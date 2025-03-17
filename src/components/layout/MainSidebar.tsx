@@ -67,8 +67,8 @@ export function MainSidebar() {
   ];
 
   return (
-    <Sidebar className="border-r border-border">
-      <SidebarHeader className="flex h-16 items-center justify-between px-4">
+    <Sidebar className="border-r border-border shadow-md">
+      <SidebarHeader className="flex h-16 items-center justify-between px-4 bg-primary/5">
         <div className="flex items-center space-x-2">
           <BarChart3 className="h-6 w-6 text-primary" />
           <span className={cn("font-semibold text-lg transition-opacity text-foreground", !open && "opacity-0")}>
@@ -76,37 +76,37 @@ export function MainSidebar() {
           </span>
         </div>
         <SidebarTrigger>
-          <button className="p-2 rounded-md hover:bg-sidebar-accent transition-colors">
+          <button className="p-2 rounded-md hover:bg-primary/10 transition-colors">
             <Menu className="h-5 w-5 text-foreground" />
           </button>
         </SidebarTrigger>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="px-2 py-4">
         <SidebarMenu>
           {menuItems.map((item) => (
-            <SidebarMenuItem key={item.path}>
+            <SidebarMenuItem key={item.path} className="mb-1">
               <SidebarMenuButton asChild>
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>
                     cn(
-                      "flex items-center gap-3 px-3 py-2 rounded-md transition-colors",
+                      "flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200",
                       isActive
-                        ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent"
+                        ? "bg-primary text-primary-foreground font-medium shadow-sm"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground"
                     )
                   }
                 >
                   <item.icon className="h-5 w-5" />
-                  <span className="text-sm">{item.title}</span>
+                  <span className="text-sm font-medium">{item.title}</span>
                 </NavLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="p-4 text-xs text-center text-sidebar-foreground">
-        {open && <p>Search Console Analytics</p>}
+      <SidebarFooter className="p-4 text-xs text-center border-t border-border/50 text-sidebar-foreground/70">
+        {open && <p className="animate-fade-in">Search Console Analytics © 2023</p>}
       </SidebarFooter>
     </Sidebar>
   );
