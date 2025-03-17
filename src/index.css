@@ -169,9 +169,27 @@ table {
 
 /* Custom sidebar styles for dark mode */
 .dark .sidebar-menu-item {
-  @apply text-[#03042b] hover:text-[#171b5c];
+  @apply !text-[#03042b] hover:!text-[#171b5c];
 }
 
 .dark .sidebar-menu-item.active {
-  @apply bg-[#000aac] text-white;
+  @apply !bg-[#000aac] !text-white;
 }
+
+/* Force sidebar text colors */
+[data-sidebar="menu-button"] {
+  @apply !text-[#03042b] hover:!text-[#171b5c];
+}
+
+[data-sidebar="menu-button"][data-active="true"] {
+  @apply !bg-[#000aac] !text-white;
+}
+
+[data-sidebar="menu-button"] svg {
+  @apply !text-[#03042b] group-hover:!text-[#171b5c];
+}
+
+[data-sidebar="menu-button"][data-active="true"] svg {
+  @apply !text-white;
+}
+

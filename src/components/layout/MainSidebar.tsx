@@ -92,24 +92,26 @@ export function MainSidebar() {
                     cn(
                       "flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200",
                       isActive
-                        ? "bg-[#000aac] text-white font-medium shadow-sm"
-                        : "text-[#03042b] hover:text-[#171b5c] hover:bg-gray-100 dark:hover:bg-gray-800"
+                        ? "!bg-[#000aac] !text-white font-medium shadow-sm"
+                        : "!text-[#03042b] hover:!text-[#171b5c] hover:bg-gray-100 dark:hover:bg-gray-800"
                     )
                   }
                 >
                   <item.icon className={cn("h-5 w-5", 
                     location.pathname === item.path 
-                      ? "text-white" 
-                      : "text-[#03042b] group-hover:text-[#171b5c]"
+                      ? "!text-white" 
+                      : "!text-[#03042b] group-hover:!text-[#171b5c]"
                   )} />
-                  <span className="text-sm font-medium">{item.title}</span>
+                  <span className="text-sm font-medium">
+                    {item.title}
+                  </span>
                 </NavLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="p-4 text-xs text-center border-t border-border/50 text-[#03042b]">
+      <SidebarFooter className="p-4 text-xs text-center border-t border-border/50 !text-[#03042b]">
         {open && <p className="animate-fade-in">Search Console Analytics © 2023</p>}
       </SidebarFooter>
     </Sidebar>
