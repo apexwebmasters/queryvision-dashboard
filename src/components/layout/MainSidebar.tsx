@@ -93,11 +93,15 @@ export function MainSidebar() {
                       "flex items-center gap-3 px-3 py-2.5 rounded-md transition-all duration-200",
                       isActive
                         ? "bg-primary text-primary-foreground font-medium shadow-sm"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-foreground"
+                        : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100"
                     )
                   }
                 >
-                  <item.icon className="h-5 w-5" />
+                  <item.icon className={cn("h-5 w-5", 
+                    location.pathname === item.path 
+                      ? "text-primary-foreground" 
+                      : "text-gray-600 dark:text-gray-400"
+                  )} />
                   <span className="text-sm font-medium">{item.title}</span>
                 </NavLink>
               </SidebarMenuButton>
@@ -105,7 +109,7 @@ export function MainSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="p-4 text-xs text-center border-t border-border/50 text-sidebar-foreground/70">
+      <SidebarFooter className="p-4 text-xs text-center border-t border-border/50 text-gray-600 dark:text-gray-400">
         {open && <p className="animate-fade-in">Search Console Analytics © 2023</p>}
       </SidebarFooter>
     </Sidebar>
