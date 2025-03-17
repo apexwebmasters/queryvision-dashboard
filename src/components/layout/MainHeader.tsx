@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Calendar, Download, Filter, RefreshCw } from "lucide-react";
+import { Calendar, Download, Filter, PanelLeft, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DateRangePicker } from "../ui-custom/DateRangePicker";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -11,10 +11,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import { useSidebar } from "@/components/ui/sidebar";
 
 export function MainHeader() {
   const location = useLocation();
   const [refreshing, setRefreshing] = useState(false);
+  const { open, setOpen } = useSidebar();
 
   const getPageTitle = () => {
     const path = location.pathname;
@@ -50,12 +52,30 @@ export function MainHeader() {
     toast.success("Report downloaded successfully!");
   };
 
+  const toggleSidebar = () => {
+    setOpen(!open);
+    if (!open) {
+      toast.info("Sidebar expanded");
+    }
+  };
+
   const showActions = !location.pathname.includes('/upload') && !location.pathname.includes('/settings');
 
   return (
     <header className="border-b border-border">
       <div className="flex h-16 items-center justify-between px-6">
-        <h1 className="text-xl font-medium">{getPageTitle()}</h1>
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={toggleSidebar}
+            className="md:hidden"
+            title={open ? "Hide Sidebar" : "Show Sidebar"}
+          >
+            <PanelLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-xl font-medium">{getPageTitle()}</h1>
+        </div>
         
         {showActions && (
           <div className="flex items-center space-x-3">

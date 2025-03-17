@@ -12,7 +12,6 @@ import {
   useSidebar
 } from "@/components/ui/sidebar";
 import {
-  BarChart3,
   FileText,
   Home,
   LineChart,
@@ -26,7 +25,7 @@ import { cn } from "@/lib/utils";
 
 export function MainSidebar() {
   const location = useLocation();
-  const { open } = useSidebar();
+  const { open, setOpen } = useSidebar();
 
   const menuItems = [
     {
@@ -70,9 +69,13 @@ export function MainSidebar() {
     <Sidebar className="border-r border-border shadow-md">
       <SidebarHeader className="flex h-16 items-center justify-between px-4 bg-primary/5">
         <div className="flex items-center space-x-2">
-          <BarChart3 className="h-6 w-6 text-primary" />
+          <img 
+            src="/lovable-uploads/e6468c6d-e875-4e46-ab86-4f9d052f49b4.png" 
+            alt="Apex Search Logo" 
+            className="h-8 w-8"
+          />
           <span className={cn("font-semibold text-lg transition-opacity text-foreground", !open && "opacity-0")}>
-            SearchVision
+            Apex Search
           </span>
         </div>
         <SidebarTrigger>
@@ -112,7 +115,7 @@ export function MainSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="p-4 text-xs text-center border-t border-border/50 !text-[#03042b]">
-        {open && <p className="animate-fade-in">Search Console Analytics © 2023</p>}
+        {open && <p className="animate-fade-in">Apex Search © 2023</p>}
       </SidebarFooter>
     </Sidebar>
   );
