@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -75,6 +76,11 @@ export default {
 					700: '#4B5563',
 					800: '#374151',
 					900: '#1F2937',
+				},
+				navy: {
+					DEFAULT: '#03042b',
+					hover: '#171b5c',
+					active: '#000aac'
 				}
 			},
 			borderRadius: {

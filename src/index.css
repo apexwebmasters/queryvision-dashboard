@@ -166,3 +166,12 @@ table {
 .btn-hover-effect {
   @apply hover:shadow-md active:scale-95 transition-all duration-200;
 }
+
+/* Custom sidebar styles for dark mode */
+.dark .sidebar-menu-item {
+  @apply text-[#03042b] hover:text-[#171b5c];
+}
+
+.dark .sidebar-menu-item.active {
+  @apply bg-[#000aac] text-white;
+}
