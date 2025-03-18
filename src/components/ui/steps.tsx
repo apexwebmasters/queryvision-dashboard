@@ -12,6 +12,8 @@ interface StepProps {
   description?: string;
   children?: React.ReactNode;
   className?: string;
+  stepNumber?: number;
+  totalSteps?: number;
 }
 
 export function Steps({ children, className }: StepsProps) {
@@ -45,7 +47,7 @@ export function Step({
   className, 
   stepNumber, 
   totalSteps 
-}: StepProps & { stepNumber?: number; totalSteps?: number }) {
+}: StepProps) {
   return (
     <div className={cn("relative", className)}>
       <div className="flex items-start gap-4">
