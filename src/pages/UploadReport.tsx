@@ -20,6 +20,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GoogleAuth } from "@/components/GoogleAuth";
+import { GoogleClientInstructions } from "@/components/GoogleClientInstructions";
 
 export default function UploadReport() {
   const [file, setFile] = useState<File | null>(null);
@@ -234,7 +235,10 @@ export default function UploadReport() {
         </TabsContent>
         
         <TabsContent value="connect">
-          <GoogleAuth onReportFetched={handleReportFetched} />
+          <div className="space-y-6">
+            <GoogleAuth onReportFetched={handleReportFetched} />
+            <GoogleClientInstructions />
+          </div>
         </TabsContent>
       </Tabs>
     </div>

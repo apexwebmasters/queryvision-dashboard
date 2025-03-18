@@ -2,7 +2,8 @@
 import { toast } from "sonner";
 
 // Google OAuth configuration
-// These should be replaced with actual values from the Google API Console
+// Replace with your Google Client ID from Google Cloud Console
+// See the GoogleClientInstructions component for setup details
 export const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID";
 
 export interface SearchConsoleProperty {
