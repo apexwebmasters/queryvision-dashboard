@@ -48,6 +48,17 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
     // Initial check
     handleResize();
     
+    // Show a notification about Google Search Console integration
+    setTimeout(() => {
+      toast.info(
+        "New feature: Connect directly to Google Search Console!",
+        {
+          description: "Visit the Upload Report page to try it out.",
+          duration: 5000,
+        }
+      );
+    }, 3000);
+    
     return () => window.removeEventListener('resize', handleResize);
   }, [open, setOpen]);
   
