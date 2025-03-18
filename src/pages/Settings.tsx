@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { toast } from "sonner";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,9 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DeploymentGuide } from "@/components/deployment/DeploymentGuide";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Settings() {
   const [saving, setSaving] = useState(false);
+  const { user } = useAuth();
   
   const handleSave = () => {
     setSaving(true);
@@ -25,10 +27,11 @@ export default function Settings() {
   return (
     <div className="max-w-4xl mx-auto space-y-6 animate-slide-in">
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="general">General</TabsTrigger>
           <TabsTrigger value="display">Display</TabsTrigger>
           <TabsTrigger value="data">Data Management</TabsTrigger>
+          <TabsTrigger value="documentation">Documentation</TabsTrigger>
         </TabsList>
         
         <TabsContent value="general" className="mt-6">
@@ -239,6 +242,56 @@ export default function Settings() {
                 {saving ? "Saving..." : "Save Changes"}
               </Button>
             </CardFooter>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="documentation" className="mt-6">
+          {user?.email === "demo@example.com" && <DeploymentGuide />}
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>User Documentation</CardTitle>
+              <CardDescription>
+                Reference guides and helpful information
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium">Additional Resources</h3>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>
+                    <a 
+                      href="https://help.hostinger.com/en/articles/4455931-how-to-upload-website-to-hostinger" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Hostinger Official Guide
+                    </a>
+                  </li>
+                  <li>
+                    <a 
+                      href="https://vitejs.dev/guide/static-deploy.html" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Vite Deployment Guide
+                    </a>
+                  </li>
+                  <li>
+                    <a 
+                      href="https://react.dev/learn/start-a-new-react-project" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      React Official Documentation
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </CardContent>
           </Card>
         </TabsContent>
       </Tabs>

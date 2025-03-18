@@ -1,16 +1,15 @@
+
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MetricsOverview } from "@/components/dashboard/MetricsOverview";
 import { PerformanceCharts } from "@/components/dashboard/PerformanceCharts";
-import { DeploymentGuide } from "@/components/deployment/DeploymentGuide";
 import { generateOverviewData } from "@/utils/dataGenerator";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any[]>([]);
-  const { user } = useAuth();
   
   useEffect(() => {
     // Simulate loading data
@@ -34,9 +33,6 @@ export default function Dashboard() {
   
   return (
     <div className="space-y-6 animate-slide-in">
-      {/* Deployment Guide for admins or specific users */}
-      {user?.email === "demo@example.com" && <DeploymentGuide />}
-      
       {/* Metrics Overview */}
       <MetricsOverview
         loading={loading}
