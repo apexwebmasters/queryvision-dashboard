@@ -6,6 +6,15 @@ import { toast } from "sonner";
 // See the GoogleClientInstructions component for setup details
 export const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID";
 
+// IMPORTANT: Authentication Model
+// This application uses two separate authentication systems:
+// 1. User authentication for the dashboard (login/register)
+// 2. Google Search Console API authentication (OAuth)
+//
+// As the dashboard provider, you need ONE Google Client ID for your application.
+// Each of your users will authenticate with their own Google accounts that have
+// access to Search Console. They don't need to create Google Cloud projects themselves.
+
 export interface SearchConsoleProperty {
   siteUrl: string;
   permissionLevel: string;
