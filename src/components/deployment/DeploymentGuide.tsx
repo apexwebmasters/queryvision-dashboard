@@ -52,7 +52,7 @@ export const DeploymentGuide = () => {
 {`<IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-  RewriteRule ^index\.html$ - [L]
+  RewriteRule ^index\\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
@@ -116,9 +116,9 @@ jobs:
     - name: Deploy to Hostinger
       uses: SamKirkland/FTP-Deploy-Action@4.0.0
       with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
+        server: \${{ secrets.FTP_SERVER }}
+        username: \${{ secrets.FTP_USERNAME }}
+        password: \${{ secrets.FTP_PASSWORD }}
         local-dir: ./dist/
         server-dir: /public_html/search.apexwebmasters.com/`}
                 </Code>
