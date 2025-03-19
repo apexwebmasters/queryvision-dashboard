@@ -10,8 +10,8 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
-  // Set the base path for the application to 'trend/'
-  base: '/trend/', 
+  // Use conditional base path - empty for Electron, '/trend/' for web
+  base: process.env.ELECTRON_APP === 'true' ? './' : '/trend/', 
   plugins: [
     react(),
     mode === 'development' &&

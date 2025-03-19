@@ -1,0 +1,9 @@
+
+{
+  "scripts": {
+    "dev:electron": "cross-env ELECTRON_APP=true concurrently \"npm run dev\" \"npm run electron\"",
+    "electron": "wait-on http://localhost:8080 && electron electron/main.js",
+    "build:electron": "cross-env ELECTRON_APP=true npm run build && electron-builder",
+    "dist:win": "electron-builder --win --x64"
+  }
+}

@@ -19,9 +19,14 @@ import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 // Use the base URL from import.meta.env.BASE_URL
-// This will be set to '/trend/' based on vite.config.ts
+// This will be set to '/trend/' for web and './' for Electron
 const getBasename = () => {
   return import.meta.env.BASE_URL;
+};
+
+// Detect if running in Electron
+const isElectron = () => {
+  return window && window.process && window.process.type;
 };
 
 const queryClient = new QueryClient({
