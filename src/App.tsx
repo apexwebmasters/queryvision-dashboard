@@ -24,9 +24,10 @@ const getBasename = () => {
   return import.meta.env.BASE_URL;
 };
 
-// Detect if running in Electron
+// Detect if running in Electron - safely check without TypeScript errors
 const isElectron = () => {
-  return window && window.process && window.process.type;
+  // Check if window has process object and nodeIntegration is enabled
+  return !!(window && window.process && window.process.versions && window.process.versions.electron);
 };
 
 const queryClient = new QueryClient({
