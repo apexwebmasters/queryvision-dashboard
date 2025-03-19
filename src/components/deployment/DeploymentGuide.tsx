@@ -24,7 +24,7 @@ export const DeploymentGuide = () => {
             <Alert className="mb-4">
               <AlertTitle>Quick Deployment</AlertTitle>
               <AlertDescription>
-                Follow these steps to deploy your React app on Hostinger
+                Follow these steps to deploy your React app on Hostinger (subdirectory installation)
               </AlertDescription>
             </Alert>
             
@@ -42,30 +42,30 @@ export const DeploymentGuide = () => {
                 <p className="text-sm">
                   1. Log in to your Hostinger control panel<br />
                   2. Navigate to File Manager<br />
-                  3. Go to the domain/subdomain directory (search.apexwebmasters.com)<br />
+                  3. Go to the subdirectory path: <code>/home/u505283239/domains/apexwebmasters.com/public_html/trend</code><br />
                   4. Upload all files from the <code>dist</code> folder to this directory
                 </p>
               </Step>
               
-              <Step title="Configure Server Routing" description="Create .htaccess file">
+              <Step title="Configure Server Routing" description="Make sure .htaccess file is uploaded">
                 <Code>
 {`<IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /
+  RewriteBase /trend/
   RewriteRule ^index\\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+  RewriteRule . /trend/index.html [L]
 </IfModule>`}
                 </Code>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Create this file in your domain's root directory
+                  Ensure this file is in your <code>/trend</code> directory
                 </p>
               </Step>
               
               <Step title="Update Google Configuration" description="Update authorized domains">
                 <p className="text-sm">
-                  Add <code>search.apexwebmasters.com</code> to your Google Cloud Console as an authorized JavaScript origin
+                  Add <code>trend.apexwebmasters.com</code> to your Google Cloud Console as an authorized JavaScript origin
                 </p>
               </Step>
             </Steps>
@@ -120,7 +120,7 @@ jobs:
         username: \${{ secrets.FTP_USERNAME }}
         password: \${{ secrets.FTP_PASSWORD }}
         local-dir: ./dist/
-        server-dir: /public_html/search.apexwebmasters.com/`}
+        server-dir: /public_html/trend/`}
                 </Code>
               </CardContent>
             </Card>

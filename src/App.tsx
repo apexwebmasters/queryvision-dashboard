@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,8 +18,10 @@ import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
 
+// Use the base URL from import.meta.env.BASE_URL
+// This will be set to '/trend/' based on vite.config.ts
 const getBasename = () => {
-  return import.meta.env.BASE_URL !== '/' ? import.meta.env.BASE_URL : '';
+  return import.meta.env.BASE_URL;
 };
 
 const queryClient = new QueryClient({

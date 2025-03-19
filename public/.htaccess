@@ -1,19 +1,21 @@
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /
+  # Base path should match the subdirectory
+  RewriteBase /trend/
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+  # Rewrite all other URLs to /trend/index.html
+  RewriteRule . /trend/index.html [L]
 </IfModule>
 
 # If above doesn't work, try this alternate version:
 # <IfModule mod_rewrite.c>
 #   RewriteEngine On
-#   RewriteBase /
-#   RewriteCond %{REQUEST_URI} !^/index.html
+#   RewriteBase /trend/
+#   RewriteCond %{REQUEST_URI} !^/trend/index.html
 #   RewriteCond %{REQUEST_FILENAME} !-f
 #   RewriteCond %{REQUEST_FILENAME} !-d
-#   RewriteRule ^(.*)$ /index.html [L,QSA]
+#   RewriteRule ^(.*)$ /trend/index.html [L,QSA]
 # </IfModule>
