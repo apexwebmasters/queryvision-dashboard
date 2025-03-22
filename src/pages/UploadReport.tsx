@@ -21,6 +21,9 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GoogleAuth } from "@/components/GoogleAuth";
 import { GoogleClientInstructions } from "@/components/GoogleClientInstructions";
+import { parseExcelFile, SearchConsoleData } from "@/utils/excelParser";
+import { useSearchData } from "@/contexts/SearchDataContext";
+import { useNavigate } from "react-router-dom";
 
 export default function UploadReport() {
   const [file, setFile] = useState<File | null>(null);
@@ -28,6 +31,8 @@ export default function UploadReport() {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadComplete, setUploadComplete] = useState(false);
+  const { setSearchData } = useSearchData();
+  const navigate = useNavigate();
 
   const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -54,7 +59,7 @@ export default function UploadReport() {
       "text/csv",
     ];
     
-    if (validTypes.includes(file.type)) {
+    if (validTypes.includes(file.type) || file.name.endsWith('.xlsx') || file.name.endsWith('.csv')) {
       setFile(file);
       toast.success("File selected successfully");
     } else {
@@ -67,39 +72,67 @@ export default function UploadReport() {
     setUploadComplete(false);
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!file) return;
 
     setUploading(true);
     setUploadProgress(0);
 
-    // Simulate upload process
-    const interval = setInterval(() => {
-      setUploadProgress((prevProgress) => {
-        const newProgress = prevProgress + 10;
-        
-        if (newProgress >= 100) {
-          clearInterval(interval);
+    try {
+      // Simulate initial upload progress
+      const progressInterval = setInterval(() => {
+        setUploadProgress((prev) => {
+          if (prev >= 80) {
+            clearInterval(progressInterval);
+            return 80;
+          }
+          return prev + 10;
+        });
+      }, 200);
+
+      // Parse the Excel file
+      const parsedData: SearchConsoleData[] = await parseExcelFile(file);
+      
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+      
+      setTimeout(() => {
+        if (parsedData.length > 0) {
+          // Update context with parsed data
+          setSearchData(parsedData);
+          setUploadComplete(true);
+          setUploading(false);
           
+          toast.success(`Successfully processed ${parsedData.length} rows of data`);
+          
+          // Navigate to dashboard after successful upload
           setTimeout(() => {
-            setUploading(false);
-            setUploadComplete(true);
-            toast.success("Report uploaded successfully!");
-          }, 500);
-          
-          return 100;
+            navigate('/dashboard');
+          }, 1500);
+        } else {
+          setUploading(false);
+          toast.error('No valid data found in the file');
         }
-        
-        return newProgress;
-      });
-    }, 300);
+      }, 500);
+    } catch (error) {
+      console.error('Error processing file:', error);
+      setUploading(false);
+      toast.error('Failed to process the file');
+    }
   };
 
   const handleReportFetched = (data: any) => {
     console.log("Search Console data received:", data);
-    // In a real app, we would process this data similarly to how we handle
-    // uploaded files, but for now we just show a success message
-    toast.success(`Received ${data.length} rows of data from Search Console`);
+    if (Array.isArray(data) && data.length > 0) {
+      setSearchData(data);
+      toast.success(`Received ${data.length} rows of data from Search Console`);
+      // Navigate to dashboard after successful fetch
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
+    } else {
+      toast.error('No valid data received from Google Search Console');
+    }
   };
 
   return (
@@ -187,7 +220,7 @@ export default function UploadReport() {
                       <div className="space-y-2">
                         <Progress value={uploadProgress} />
                         <p className="text-sm text-center text-muted-foreground">
-                          Uploading... {uploadProgress}%
+                          {uploadProgress < 100 ? `Uploading... ${uploadProgress}%` : 'Processing data...'}
                         </p>
                       </div>
                     )}
@@ -195,7 +228,7 @@ export default function UploadReport() {
                     {uploadComplete && (
                       <div className="flex items-center justify-center rounded-lg border bg-green-50 p-4 text-green-600">
                         <CheckCircle2 className="mr-2 h-5 w-5" />
-                        <span>Upload complete! Processing your report...</span>
+                        <span>Upload complete! Redirecting to dashboard...</span>
                       </div>
                     )}
                   </div>
@@ -228,7 +261,7 @@ export default function UploadReport() {
                 className="px-8"
               >
                 <Upload className="mr-2 h-4 w-4" />
-                {uploading ? "Uploading..." : "Upload Report"}
+                {uploading ? "Processing..." : "Upload Report"}
               </Button>
             </CardFooter>
           </Card>

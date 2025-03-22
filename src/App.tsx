@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { DashboardLayout } from "./components/layout/DashboardLayout";
 import { AuthProvider } from "./contexts/AuthContext";
+import { SearchDataProvider } from "./contexts/SearchDataContext";
 import { ProtectedRoute, AuthRoute } from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import TopQueries from "./pages/TopQueries";
@@ -18,23 +19,18 @@ import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { useEffect } from "react";
 
-// Use the base URL from import.meta.env.BASE_URL
-// This will be set to '/' for web and './' for Electron
 const getBasename = () => {
   const basename = import.meta.env.BASE_URL;
   console.log("Base URL:", basename);
   return basename;
 };
 
-// Detect if running in Electron - safely check without TypeScript errors
 const isElectron = () => {
-  // Check if window has process object and nodeIntegration is enabled
   const electron = !!(window && window.process && window.process.versions && window.process.versions.electron);
   console.log("Is Electron:", electron);
   return electron;
 };
 
-// Simple component to help with debugging
 const DebugInfo = () => {
   useEffect(() => {
     console.log("DebugInfo component mounted");
@@ -73,74 +69,76 @@ const App = () => {
           <BrowserRouter basename={getBasename()}>
             {isElectron() && <DebugInfo />}
             <AuthProvider>
-              <Routes>
-                <Route path="/" element={<Navigate to="/auth" replace />} />
-                
-                <Route element={<AuthRoute />}>
-                  <Route path="/auth" element={<Auth />} />
-                </Route>
-                
-                <Route element={<ProtectedRoute />}>
-                  <Route 
-                    path="/dashboard" 
-                    element={
-                      <DashboardLayout>
-                        <Dashboard />
-                      </DashboardLayout>
-                    } 
-                  />
-                  <Route 
-                    path="/queries" 
-                    element={
-                      <DashboardLayout>
-                        <TopQueries />
-                      </DashboardLayout>
-                    } 
-                  />
-                  <Route 
-                    path="/pages" 
-                    element={
-                      <DashboardLayout>
-                        <TopPages />
-                      </DashboardLayout>
-                    } 
-                  />
-                  <Route 
-                    path="/performance" 
-                    element={
-                      <DashboardLayout>
-                        <Performance />
-                      </DashboardLayout>
-                    } 
-                  />
-                  <Route 
-                    path="/declining-keywords" 
-                    element={
-                      <DashboardLayout>
-                        <DecliningKeywords />
-                      </DashboardLayout>
-                    } 
-                  />
-                  <Route 
-                    path="/upload" 
-                    element={
-                      <DashboardLayout>
-                        <UploadReport />
-                      </DashboardLayout>
-                    } 
-                  />
-                  <Route 
-                    path="/settings" 
-                    element={
-                      <DashboardLayout>
-                        <Settings />
-                      </DashboardLayout>
-                    } 
-                  />
-                </Route>
-                
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <SearchDataProvider>
+                <Routes>
+                  <Route path="/" element={<Navigate to="/auth" replace />} />
+                  
+                  <Route element={<AuthRoute />}>
+                    <Route path="/auth" element={<Auth />} />
+                  </Route>
+                  
+                  <Route element={<ProtectedRoute />}>
+                    <Route 
+                      path="/dashboard" 
+                      element={
+                        <DashboardLayout>
+                          <Dashboard />
+                        </DashboardLayout>
+                      } 
+                    />
+                    <Route 
+                      path="/queries" 
+                      element={
+                        <DashboardLayout>
+                          <TopQueries />
+                        </DashboardLayout>
+                      } 
+                    />
+                    <Route 
+                      path="/pages" 
+                      element={
+                        <DashboardLayout>
+                          <TopPages />
+                        </DashboardLayout>
+                      } 
+                    />
+                    <Route 
+                      path="/performance" 
+                      element={
+                        <DashboardLayout>
+                          <Performance />
+                        </DashboardLayout>
+                      } 
+                    />
+                    <Route 
+                      path="/declining-keywords" 
+                      element={
+                        <DashboardLayout>
+                          <DecliningKeywords />
+                        </DashboardLayout>
+                      } 
+                    />
+                    <Route 
+                      path="/upload" 
+                      element={
+                        <DashboardLayout>
+                          <UploadReport />
+                        </DashboardLayout>
+                      } 
+                    />
+                    <Route 
+                      path="/settings" 
+                      element={
+                        <DashboardLayout>
+                          <Settings />
+                        </DashboardLayout>
+                      } 
+                    />
+                  </Route>
+                  
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </SearchDataProvider>
             </AuthProvider>
           </BrowserRouter>
           <Toaster />
