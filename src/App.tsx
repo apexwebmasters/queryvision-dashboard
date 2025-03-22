@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,7 +19,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { useEffect } from "react";
 
 // Use the base URL from import.meta.env.BASE_URL
-// This will be set to '/trend/' for web and './' for Electron
+// This will be set to '/' for web and './' for Electron
 const getBasename = () => {
   const basename = import.meta.env.BASE_URL;
   console.log("Base URL:", basename);
