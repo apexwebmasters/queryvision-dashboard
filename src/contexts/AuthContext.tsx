@@ -24,31 +24,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
+  console.log("AuthProvider rendering, isLoading:", isLoading);
+
   useEffect(() => {
+    console.log("AuthProvider useEffect running");
     // Check if user is logged in on component mount
     const storedUser = localStorage.getItem("user");
+    console.log("Stored user found:", !!storedUser);
+    
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        console.log("User parsed successfully:", parsedUser);
+        setUser(parsedUser);
       } catch (e) {
         console.error("Failed to parse stored user", e);
         localStorage.removeItem("user");
       }
+    } else {
+      console.log("No stored user found");
     }
+    
     setIsLoading(false);
   }, []);
 
   const login = (userData: User) => {
+    console.log("Login called with user:", userData);
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
   };
 
   const logout = () => {
+    console.log("Logout called");
     setUser(null);
     localStorage.removeItem("user");
     toast.success("Logged out successfully");
     navigate("/auth");
   };
+
+  console.log("AuthProvider state:", { user, isAuthenticated: !!user, isLoading });
 
   return (
     <AuthContext.Provider

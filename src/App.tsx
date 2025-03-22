@@ -17,17 +17,38 @@ import DecliningKeywords from "./pages/DecliningKeywords";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { useEffect } from "react";
 
 // Use the base URL from import.meta.env.BASE_URL
 // This will be set to '/trend/' for web and './' for Electron
 const getBasename = () => {
-  return import.meta.env.BASE_URL;
+  const basename = import.meta.env.BASE_URL;
+  console.log("Base URL:", basename);
+  return basename;
 };
 
 // Detect if running in Electron - safely check without TypeScript errors
 const isElectron = () => {
   // Check if window has process object and nodeIntegration is enabled
-  return !!(window && window.process && window.process.versions && window.process.versions.electron);
+  const electron = !!(window && window.process && window.process.versions && window.process.versions.electron);
+  console.log("Is Electron:", electron);
+  return electron;
+};
+
+// Simple component to help with debugging
+const DebugInfo = () => {
+  useEffect(() => {
+    console.log("DebugInfo component mounted");
+    console.log("Current URL:", window.location.href);
+    console.log("Environment:", import.meta.env.MODE);
+    console.log("Base URL:", import.meta.env.BASE_URL);
+  }, []);
+
+  return (
+    <div className="fixed bottom-0 right-0 bg-black/80 text-white p-2 text-xs z-50">
+      DEBUG: {import.meta.env.MODE} | Base: {import.meta.env.BASE_URL} | URL: {window.location.pathname}
+    </div>
+  );
 };
 
 const queryClient = new QueryClient({
@@ -39,87 +60,96 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => (
-  <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <BrowserRouter basename={getBasename()}>
-          <AuthProvider>
-            <Routes>
-              <Route path="/" element={<Navigate to="/auth" replace />} />
-              
-              <Route element={<AuthRoute />}>
-                <Route path="/auth" element={<Auth />} />
-              </Route>
-              
-              <Route element={<ProtectedRoute />}>
-                <Route 
-                  path="/dashboard" 
-                  element={
-                    <DashboardLayout>
-                      <Dashboard />
-                    </DashboardLayout>
-                  } 
-                />
-                <Route 
-                  path="/queries" 
-                  element={
-                    <DashboardLayout>
-                      <TopQueries />
-                    </DashboardLayout>
-                  } 
-                />
-                <Route 
-                  path="/pages" 
-                  element={
-                    <DashboardLayout>
-                      <TopPages />
-                    </DashboardLayout>
-                  } 
-                />
-                <Route 
-                  path="/performance" 
-                  element={
-                    <DashboardLayout>
-                      <Performance />
-                    </DashboardLayout>
-                  } 
-                />
-                <Route 
-                  path="/declining-keywords" 
-                  element={
-                    <DashboardLayout>
-                      <DecliningKeywords />
-                    </DashboardLayout>
-                  } 
-                />
-                <Route 
-                  path="/upload" 
-                  element={
-                    <DashboardLayout>
-                      <UploadReport />
-                    </DashboardLayout>
-                  } 
-                />
-                <Route 
-                  path="/settings" 
-                  element={
-                    <DashboardLayout>
-                      <Settings />
-                    </DashboardLayout>
-                  } 
-                />
-              </Route>
-              
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AuthProvider>
-        </BrowserRouter>
-        <Toaster />
-        <Sonner />
-      </TooltipProvider>
-    </QueryClientProvider>
-  </ErrorBoundary>
-);
+console.log("App rendering started");
+
+const App = () => {
+  useEffect(() => {
+    console.log("App component mounted");
+  }, []);
+
+  return (
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <BrowserRouter basename={getBasename()}>
+            {isElectron() && <DebugInfo />}
+            <AuthProvider>
+              <Routes>
+                <Route path="/" element={<Navigate to="/auth" replace />} />
+                
+                <Route element={<AuthRoute />}>
+                  <Route path="/auth" element={<Auth />} />
+                </Route>
+                
+                <Route element={<ProtectedRoute />}>
+                  <Route 
+                    path="/dashboard" 
+                    element={
+                      <DashboardLayout>
+                        <Dashboard />
+                      </DashboardLayout>
+                    } 
+                  />
+                  <Route 
+                    path="/queries" 
+                    element={
+                      <DashboardLayout>
+                        <TopQueries />
+                      </DashboardLayout>
+                    } 
+                  />
+                  <Route 
+                    path="/pages" 
+                    element={
+                      <DashboardLayout>
+                        <TopPages />
+                      </DashboardLayout>
+                    } 
+                  />
+                  <Route 
+                    path="/performance" 
+                    element={
+                      <DashboardLayout>
+                        <Performance />
+                      </DashboardLayout>
+                    } 
+                  />
+                  <Route 
+                    path="/declining-keywords" 
+                    element={
+                      <DashboardLayout>
+                        <DecliningKeywords />
+                      </DashboardLayout>
+                    } 
+                  />
+                  <Route 
+                    path="/upload" 
+                    element={
+                      <DashboardLayout>
+                        <UploadReport />
+                      </DashboardLayout>
+                    } 
+                  />
+                  <Route 
+                    path="/settings" 
+                    element={
+                      <DashboardLayout>
+                        <Settings />
+                      </DashboardLayout>
+                    } 
+                  />
+                </Route>
+                
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AuthProvider>
+          </BrowserRouter>
+          <Toaster />
+          <Sonner />
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
+  );
+};
 
 export default App;
