@@ -1,12 +1,14 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { SearchConsoleData } from '@/utils/excelParser';
+import { toast } from 'sonner';
 
 interface SearchDataContextType {
   searchData: SearchConsoleData[];
   setSearchData: (data: SearchConsoleData[]) => void;
   isDataLoaded: boolean;
   getDataByType: (type: 'query' | 'page' | 'country' | 'device' | 'search_appearance' | 'date') => SearchConsoleData[];
+  clearData: () => void;
 }
 
 const SearchDataContext = createContext<SearchDataContextType | undefined>(undefined);
@@ -16,11 +18,30 @@ export const SearchDataProvider = ({ children }: { children: ReactNode }) => {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const updateSearchData = (data: SearchConsoleData[]) => {
+    if (data.length === 0) {
+      toast.error('No data to save');
+      return;
+    }
+    
     setSearchData(data);
     setIsDataLoaded(true);
+    
     // Store in localStorage for persistence
-    localStorage.setItem('searchConsoleData', JSON.stringify(data));
-    console.log('Data saved to context and localStorage:', data.length, 'items');
+    try {
+      localStorage.setItem('searchConsoleData', JSON.stringify(data));
+      console.log('Data saved to context and localStorage:', data.length, 'items');
+      toast.success(`Saved ${data.length} data points`);
+    } catch (error) {
+      console.error('Error saving data to localStorage:', error);
+      toast.error('Failed to save data to localStorage');
+    }
+  };
+
+  const clearData = () => {
+    setSearchData([]);
+    setIsDataLoaded(false);
+    localStorage.removeItem('searchConsoleData');
+    toast.success('Data cleared');
   };
 
   const getDataByType = (type: 'query' | 'page' | 'country' | 'device' | 'search_appearance' | 'date') => {
@@ -28,7 +49,7 @@ export const SearchDataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // Load data from localStorage on first render
-  React.useEffect(() => {
+  useEffect(() => {
     const storedData = localStorage.getItem('searchConsoleData');
     if (storedData) {
       try {
@@ -49,7 +70,8 @@ export const SearchDataProvider = ({ children }: { children: ReactNode }) => {
       searchData, 
       setSearchData: updateSearchData, 
       isDataLoaded, 
-      getDataByType 
+      getDataByType,
+      clearData 
     }}>
       {children}
     </SearchDataContext.Provider>

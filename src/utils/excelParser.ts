@@ -16,12 +16,6 @@ export interface SearchConsoleData {
   dataType: 'query' | 'page' | 'country' | 'device' | 'search_appearance' | 'date';
 }
 
-interface SheetMapping {
-  name: string;
-  keyField: string;
-  dataType: 'query' | 'page' | 'country' | 'device' | 'search_appearance' | 'date';
-}
-
 export const parseExcelFile = async (file: File): Promise<SearchConsoleData[]> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -29,87 +23,127 @@ export const parseExcelFile = async (file: File): Promise<SearchConsoleData[]> =
     reader.onload = (e) => {
       try {
         const data = e.target?.result;
-        const workbook = XLSX.read(data, { type: 'binary' });
+        const workbook = XLSX.read(data, { type: 'array' });
         
-        // Define sheet mappings for Google Search Console exports
-        const sheetMappings: SheetMapping[] = [
-          { name: 'Queries', keyField: 'Query', dataType: 'query' },
-          { name: 'Pages', keyField: 'Top pages', dataType: 'page' },
-          { name: 'Countries', keyField: 'Country', dataType: 'country' },
-          { name: 'Devices', keyField: 'Device', dataType: 'device' },
-          { name: 'Search appearance', keyField: 'Search Appearance', dataType: 'search_appearance' },
-          { name: 'Dates', keyField: 'Date', dataType: 'date' },
+        console.log("Available sheets:", workbook.SheetNames);
+        
+        // Define mappings for each sheet type
+        const sheetMappings = [
+          { 
+            name: "Queries", 
+            keyField: "Query",
+            dataType: 'query' as const,
+            possibleNames: ["Queries", "queries", "QUERIES", "Query", "query"]
+          },
+          { 
+            name: "Pages", 
+            keyField: "Top pages",
+            dataType: 'page' as const,
+            possibleNames: ["Pages", "pages", "PAGES", "Page", "page", "Top pages", "URLs", "urls"]
+          },
+          { 
+            name: "Countries", 
+            keyField: "Country",
+            dataType: 'country' as const,
+            possibleNames: ["Countries", "countries", "COUNTRIES", "Country", "country"]
+          },
+          { 
+            name: "Devices", 
+            keyField: "Device",
+            dataType: 'device' as const,
+            possibleNames: ["Devices", "devices", "DEVICES", "Device", "device"]
+          },
+          { 
+            name: "Search appearance", 
+            keyField: "Search Appearance",
+            dataType: 'search_appearance' as const,
+            possibleNames: ["Search appearance", "search appearance", "SEARCH APPEARANCE", "Search Appearance"]
+          },
+          { 
+            name: "Dates", 
+            keyField: "Date",
+            dataType: 'date' as const,
+            possibleNames: ["Dates", "dates", "DATES", "Date", "date"]
+          }
         ];
         
-        // Collect data from all sheets
         let allData: SearchConsoleData[] = [];
         
-        for (const mapping of sheetMappings) {
-          // Try variations of sheet names (GSC can have slight variations)
-          const possibleNames = [
-            mapping.name,
-            mapping.name.toLowerCase(),
-            mapping.name.toUpperCase(),
-            mapping.name.replace(' ', '_'),
-            mapping.name.replace(' ', '-'),
-          ];
-          
-          let foundSheet = null;
-          for (const name of possibleNames) {
-            if (workbook.SheetNames.includes(name)) {
-              foundSheet = name;
+        // Process each sheet in the workbook
+        for (const sheetMapping of sheetMappings) {
+          // Find the sheet by trying all possible names
+          let sheetName = null;
+          for (const possibleName of sheetMapping.possibleNames) {
+            if (workbook.SheetNames.includes(possibleName)) {
+              sheetName = possibleName;
               break;
             }
           }
           
-          if (!foundSheet) continue;
+          if (!sheetName) {
+            console.log(`Sheet not found for mapping: ${sheetMapping.name}`);
+            continue;
+          }
           
-          const worksheet = workbook.Sheets[foundSheet];
+          const worksheet = workbook.Sheets[sheetName];
+          console.log(`Processing sheet: ${sheetName}`);
           
-          // Convert to JSON
-          const jsonData = XLSX.utils.sheet_to_json(worksheet);
-          console.log(`Sheet ${foundSheet} data:`, jsonData);
+          // Convert sheet to JSON with header row
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { raw: false });
           
-          if (jsonData.length === 0) continue;
+          if (jsonData.length === 0) {
+            console.log(`No data found in sheet: ${sheetName}`);
+            continue;
+          }
           
-          // Map the data based on the sheet type
-          const mappedData: SearchConsoleData[] = jsonData.map((row: any) => {
+          console.log(`First row of data in ${sheetName}:`, jsonData[0]);
+          
+          // Process data based on sheet type
+          const processedData = jsonData.map((row: any) => {
+            // Basic data structure for all types
             const baseData: SearchConsoleData = {
-              clicks: Number(row.Clicks || row.clicks || 0),
-              impressions: Number(row.Impressions || row.impressions || 0),
+              clicks: parseFloat(row.Clicks || row.clicks || '0'),
+              impressions: parseFloat(row.Impressions || row.impressions || '0'),
               ctr: parseFloat(String(row.CTR || row.ctr || '0%').replace('%', '')) / 100,
-              position: Number(row.Position || row.position || 0),
-              dataType: mapping.dataType,
+              position: parseFloat(row.Position || row.position || '0'),
+              dataType: sheetMapping.dataType
             };
             
-            // Add specific field based on sheet type
-            if (mapping.dataType === 'query') {
-              baseData.query = row.Query || row.query || '';
-            } else if (mapping.dataType === 'page') {
-              baseData.page = row['Top pages'] || row.Page || row.page || row.URL || row.url || '';
-            } else if (mapping.dataType === 'country') {
-              baseData.country = row.Country || row.country || '';
-            } else if (mapping.dataType === 'device') {
-              baseData.device = row.Device || row.device || '';
-            } else if (mapping.dataType === 'search_appearance') {
-              baseData.searchAppearance = row['Search Appearance'] || row.searchAppearance || '';
-            } else if (mapping.dataType === 'date') {
-              baseData.date = row.Date || row.date || '';
+            // Add type-specific field
+            switch (sheetMapping.dataType) {
+              case 'query':
+                baseData.query = row.Query || row.query || '';
+                break;
+              case 'page':
+                baseData.page = row['Top pages'] || row['Page'] || row['page'] || row['URL'] || row['url'] || '';
+                break;
+              case 'country':
+                baseData.country = row.Country || row.country || '';
+                break;
+              case 'device':
+                baseData.device = row.Device || row.device || '';
+                break;
+              case 'search_appearance':
+                baseData.searchAppearance = row['Search Appearance'] || row['Search appearance'] || '';
+                break;
+              case 'date':
+                baseData.date = row.Date || row.date || '';
+                break;
             }
             
             return baseData;
           });
           
-          allData = [...allData, ...mappedData];
+          allData = [...allData, ...processedData];
         }
-
-        console.log('Parsed Excel data from all sheets:', allData);
+        
+        console.log(`Total processed data items: ${allData.length}`);
         
         if (allData.length === 0) {
-          toast.error('No valid data found in the Excel file. Please check if this is a Google Search Console export.');
+          toast.error('No valid data found in the Excel file');
           reject(new Error('No valid data found'));
         } else {
-          toast.success(`Successfully parsed ${allData.length} rows of data from ${workbook.SheetNames.length} sheets`);
+          toast.success(`Successfully processed ${allData.length} rows of data`);
           resolve(allData);
         }
       } catch (error) {
@@ -125,6 +159,7 @@ export const parseExcelFile = async (file: File): Promise<SearchConsoleData[]> =
       reject(error);
     };
     
-    reader.readAsBinaryString(file);
+    // Use ArrayBuffer instead of BinaryString for more reliable parsing
+    reader.readAsArrayBuffer(file);
   });
 };
