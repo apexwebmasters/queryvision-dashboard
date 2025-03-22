@@ -31,12 +31,14 @@ export default function UploadReport() {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadComplete, setUploadComplete] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { setSearchData } = useSearchData();
   const navigate = useNavigate();
 
   const handleFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setDragging(false);
+    setError(null);
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const droppedFile = e.dataTransfer.files[0];
@@ -45,6 +47,7 @@ export default function UploadReport() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(null);
     if (e.target.files && e.target.files.length > 0) {
       const selectedFile = e.target.files[0];
       validateAndSetFile(selectedFile);
@@ -63,6 +66,7 @@ export default function UploadReport() {
       setFile(file);
       toast.success("File selected successfully");
     } else {
+      setError("Please select a valid Excel or CSV file");
       toast.error("Please select a valid Excel or CSV file");
     }
   };
@@ -70,6 +74,7 @@ export default function UploadReport() {
   const removeFile = () => {
     setFile(null);
     setUploadComplete(false);
+    setError(null);
   };
 
   const handleUpload = async () => {
@@ -77,6 +82,7 @@ export default function UploadReport() {
 
     setUploading(true);
     setUploadProgress(0);
+    setError(null);
 
     try {
       // Simulate initial upload progress
@@ -103,6 +109,7 @@ export default function UploadReport() {
           setUploadComplete(true);
           setUploading(false);
           
+          console.log(`Successfully processed ${parsedData.length} rows of data`);
           toast.success(`Successfully processed ${parsedData.length} rows of data`);
           
           // Navigate to dashboard after successful upload
@@ -111,12 +118,14 @@ export default function UploadReport() {
           }, 1500);
         } else {
           setUploading(false);
+          setError("No valid data found in the file. Please check if this is a Google Search Console export.");
           toast.error('No valid data found in the file');
         }
       }, 500);
     } catch (error) {
       console.error('Error processing file:', error);
       setUploading(false);
+      setError("Failed to process the file. Please ensure it's a valid Google Search Console export.");
       toast.error('Failed to process the file');
     }
   };
@@ -231,6 +240,13 @@ export default function UploadReport() {
                         <span>Upload complete! Redirecting to dashboard...</span>
                       </div>
                     )}
+
+                    {error && (
+                      <div className="flex items-center justify-center rounded-lg border bg-red-50 p-4 text-red-600">
+                        <AlertCircle className="mr-2 h-5 w-5" />
+                        <span>{error}</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -246,7 +262,7 @@ export default function UploadReport() {
                         <li>Click on "Performance" in the left navigation</li>
                         <li>Set your desired date range and filters</li>
                         <li>Click the "Export" button at the top right</li>
-                        <li>Choose "CSV" or "Excel" format</li>
+                        <li>Choose "Excel" format for best results</li>
                         <li>Upload the downloaded file here</li>
                       </ol>
                     </div>

@@ -6,6 +6,7 @@ interface SearchDataContextType {
   searchData: SearchConsoleData[];
   setSearchData: (data: SearchConsoleData[]) => void;
   isDataLoaded: boolean;
+  getDataByType: (type: 'query' | 'page' | 'country' | 'device' | 'search_appearance' | 'date') => SearchConsoleData[];
 }
 
 const SearchDataContext = createContext<SearchDataContextType | undefined>(undefined);
@@ -20,6 +21,10 @@ export const SearchDataProvider = ({ children }: { children: ReactNode }) => {
     // Store in localStorage for persistence
     localStorage.setItem('searchConsoleData', JSON.stringify(data));
     console.log('Data saved to context and localStorage:', data.length, 'items');
+  };
+
+  const getDataByType = (type: 'query' | 'page' | 'country' | 'device' | 'search_appearance' | 'date') => {
+    return searchData.filter(item => item.dataType === type);
   };
 
   // Load data from localStorage on first render
@@ -40,7 +45,12 @@ export const SearchDataProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <SearchDataContext.Provider value={{ searchData, setSearchData: updateSearchData, isDataLoaded }}>
+    <SearchDataContext.Provider value={{ 
+      searchData, 
+      setSearchData: updateSearchData, 
+      isDataLoaded, 
+      getDataByType 
+    }}>
       {children}
     </SearchDataContext.Provider>
   );
